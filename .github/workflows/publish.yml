@@ -1,0 +1,42 @@
+# Publishing with provenance, which n8n requires for a verified community node
+# since 1 May 2026: the package has to be published by a GitHub Action so npm
+# can attest that the tarball was built from this source. A `npm publish` from a
+# laptop produces a package that cannot be verified, whatever else is right
+# about it.
+#
+# This file only runs once the package lives in its own GitHub repository, which
+# is what n8n expects anyway - one repo per community node. Until then it is the
+# checklist, not the pipeline.
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  # The OIDC token npm exchanges for the provenance attestation. Without it the
+  # publish succeeds and the attestation is silently absent.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,52 @@
+{
+  "name": "n8n-nodes-sendletter",
+  "version": "1.0.0",
+  "description": "Send real, printed letters by post from n8n. Print, frank and deliver across Europe, including registered mail with proof of posting.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "letter",
+    "post",
+    "mail",
+    "printing",
+    "registered mail"
+  ],
+  "license": "MIT",
+  "homepage": "https://sendletter.eu",
+  "author": {
+    "name": "Twilper",
+    "email": "info@sendletter.eu"
+  },
+  "bugs": {
+    "url": "https://sendletter.eu/en/developers"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && node build-icons.mjs",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/SendLetterApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/SendLetter/SendLetter.node.js",
+      "dist/nodes/SendLetter/SendLetterTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "n8n-workflow": "^1.82.0",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
