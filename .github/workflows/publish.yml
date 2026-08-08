@@ -34,7 +34,11 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - run: npm ci
+      # --ignore-scripts because n8n-workflow drags in isolated-vm, which
+      # compiles C++ and fails to build on the runner. We need n8n-workflow
+      # for its type declarations only, and this package has no native code
+      # and no runtime dependencies at all, so nothing that matters is skipped.
+      - run: npm ci --ignore-scripts
 
       # Both gates before anything leaves the machine. A community node that
       # does not compile is worse than one that does not exist: it installs,
