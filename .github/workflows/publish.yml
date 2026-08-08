@@ -1,23 +1,26 @@
 # Publishing with provenance, which n8n requires for a verified community node
-# since 1 May 2026: the package has to be published by a GitHub Action so npm
-# can attest that the tarball was built from this source. A `npm publish` from a
+# since 1 May 2026: the package has to be published by a workflow so npm can
+# attest that the tarball was built from this source. A `npm publish` from a
 # laptop produces a package that cannot be verified, whatever else is right
 # about it.
 #
-# This file only runs once the package lives in its own GitHub repository, which
-# is what n8n expects anyway - one repo per community node. Until then it is the
-# checklist, not the pipeline.
+# No NPM_TOKEN. This uses npm's trusted publishing, where the package is
+# configured to trust this repository and this workflow file, and the identity
+# comes from the OIDC token GitHub mints for the run. A stored token would be a
+# long-lived publishing credential sitting in repository secrets, readable by
+# anyone who can add a workflow; this way there is nothing to steal.
 name: Publish
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: read
-  # The OIDC token npm exchanges for the provenance attestation. Without it the
-  # publish succeeds and the attestation is silently absent.
+  # The OIDC token npm exchanges for both the identity and the provenance
+  # attestation. Without it the publish fails outright under trusted publishing.
   id-token: write
 
 jobs:
@@ -33,10 +36,11 @@ jobs:
 
       - run: npm ci
 
+      # Both gates before anything leaves the machine. A community node that
+      # does not compile is worse than one that does not exist: it installs,
+      # and then breaks somebody's workflow at runtime.
       - run: npm run typecheck
 
       - run: npm run build
 
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

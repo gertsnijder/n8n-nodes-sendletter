@@ -17,8 +17,12 @@
     "name": "Twilper",
     "email": "info@sendletter.eu"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gertsnijder/n8n-nodes-sendletter.git"
+  },
   "bugs": {
-    "url": "https://sendletter.eu/en/developers"
+    "url": "https://github.com/gertsnijder/n8n-nodes-sendletter/issues"
   },
   "engines": {
     "node": ">=20.15"
