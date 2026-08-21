@@ -76,6 +76,8 @@ export interface SendParameters {
   colour?: boolean
   duplex?: boolean
   locale?: string
+  /** Bill an organisation instead of the credential's own wallet. */
+  organizationId?: string
   idempotencyKey?: string
 }
 
@@ -101,6 +103,9 @@ export function sendLetterRequest(base: string, p: SendParameters): HttpRequest 
   }
 
   if (p.subject) body.subject = p.subject
+  // Only when set: an empty string names an organisation that does not exist,
+  // and the API refuses those rather than falling back to the own wallet.
+  if (p.organizationId) body.organizationId = p.organizationId
 
   // The single most useful field on an automation platform. n8n retries a
   // failed node and a workflow can be replayed by hand; without a key that is

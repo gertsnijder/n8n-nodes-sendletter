@@ -249,6 +249,16 @@ export class SendLetter implements INodeType {
           },
           { displayName: 'Subject', name: 'subject', type: 'string', default: '' },
           {
+            displayName: 'Bill To Organisation',
+            name: 'organizationId',
+            type: 'string',
+            default: '',
+            description:
+              'Charge this letter to an organisation instead of the credential owner. Leave ' +
+              'empty to pay from your own credit. An organisation this account may not spend ' +
+              'is refused rather than charged to you.',
+          },
+          {
             displayName: 'Idempotency Key',
             name: 'idempotencyKey',
             type: 'string',
@@ -403,6 +413,7 @@ export class SendLetter implements INodeType {
             product: options.product as Product | undefined,
             colour: options.colour as boolean | undefined,
             duplex: options.duplex as boolean | undefined,
+            organizationId: (options.organizationId as string) || undefined,
             idempotencyKey: (options.idempotencyKey as string) || undefined,
           })
         } else if (resource === 'letter' && operation === 'get') {
